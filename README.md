@@ -1,6 +1,11 @@
-# Assignment6
-Social Network Analysis
+# DML2016 - Learning Analytics in Informal Spaces
 
-Please clone this repo for instruction to Assignment 6. In the repo you will find two versions of the Assignment .rmd file - a Regular and a Death Match Edition. **You only need to complete one.** Once you have finished, commit, push and pull your assignment back to the main branch.
+**Social Network Analysis**
 
-Good luck!
+Today we are going to perform a social network analysis on data from an after school program. Please download all the files (as a Zip folder using the green button on top right) in this repository and extract them to a folder on your computer.
+
+Then open RStudio, and go to File -> New Project... -> New Directory -> Empty Project
+
+Navigate to the folder you extracted the downloaded materials to and then click "create project".
+
+Once you have created your project, you should see the files you extracted in the bottom right pane. Click on the "DML2016_instructions.RMD" file
