@@ -1,0 +1,61 @@
+---
+title: "Social Network Analysis"
+---
+
+The following data is collected from an out of school time program for middle school girls (Digital Youth Divas) to engage in designing and making experiences in a f2f program. The program includes a story that is interwoven through the experiences. As part of the program, they spend time in a social learning network where they submit their work, look at other people's submitted work, develop profiles, get their work assessed, look at other people's profiles, comment, etc.
+
+We will be using the "igraph" package to visualize different relationships. You can read more about igraph here:
+
+http://igraph.org/r/
+
+Upload the data files.
+
+```{r}
+NODE <- read.csv("dynDivas_Nodes.csv", sep = ",", header = TRUE)
+
+EDGE <- read.csv("dynDYD_Edges.csv", sep = ",", header = TRUE)
+EDGE <- EDGE[,c(4,5,1,2,3)]
+```
+
+iGraph requires data to be in a particular structure. There are several structures that it can use but we will be using a combination of an "edge list" and a "vertex list". As you might imagine the edge list contains a list of all the relationships between students and teachers and any characteristics of those edges that we might be interested in. There are two essential variables in the edge list a "from" variable and a "to" variable that descibe the relationships between vertices (a disciplinary action is given "from" a teacher "to" a student for example). 
+
+The vertex list contains all the characteristics of those vertices.
+
+Now we have both a Vertex and Edge list it is time to plot our graph!
+
+```{r}
+#Load the igraph package
+
+library(igraph)
+
+#First we will make an object that contains the graph information using our two dataframes EDGE and VERTEX. Notice that we have made "directed = TRUE" - our graph is directed since discipline is being given from a teacher to a student.
+
+g <- graph.data.frame(EDGE, directed=TRUE, vertices=NODE)
+
+#Now we can plot our graph using the force directed graphing technique - our old friend Fruchertman-Reingold!
+
+plot(g,layout=layout.fruchterman.reingold)
+
+#There are many ways to change the attributes of the graph to represent different characteristics of the newtork. For example, we can color the nodes according to gender.
+
+plot(g,layout=layout.fruchterman.reingold, vertex.color=NODE$role)
+
+#We can change the thickness of the edge according to the number of times a particular teacher has sent a particular student to the principal.
+
+plot(g,layout=layout.fruchterman.reingold, vertex.size = 0.5, vertex.color=NODE$role, edge.color=EDGE$Action, edge.arrow.size=0.2, vertex.label=NA)
+
+#Other attributes you may want to change are:
+
+#Arrow size
+edge.arrow.size=
+
+#Remove the labels
+vertex.label=NA
+
+#Vertex size
+vertex.size=
+  
+#And many others!
+```
+
+Play around with different graphs and then save your final version to the repo. Create a Zotero item for this R program and then commit, push and pull.
