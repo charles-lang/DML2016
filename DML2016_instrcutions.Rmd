@@ -1,5 +1,5 @@
 ---
-title: "Social Network Analysis"
+title: "DML2016 Learning Analytics Workshop: Social Network Analysis"
 ---
 
 The following data is collected from an out of school time program for middle school girls (Digital Youth Divas) to engage in designing and making experiences in a f2f program. The program includes a story that is interwoven through the experiences. As part of the program, they spend time in a social learning network where they submit their work, look at other people's submitted work, develop profiles, get their work assessed, look at other people's profiles, comment, etc.
@@ -11,13 +11,17 @@ http://igraph.org/r/
 Upload the data files.
 
 ```{r}
+#Upload node list into R
 NODE <- read.csv("dynDivas_Nodes.csv", sep = ",", header = TRUE)
 
+#Upload edge list into R
 EDGE <- read.csv("dynDYD_Edges.csv", sep = ",", header = TRUE)
+
+#Reorder edge list variables
 EDGE <- EDGE[,c(4,5,1,2,3)]
 ```
 
-iGraph requires data to be in a particular structure. There are several structures that it can use but we will be using a combination of an "edge list" and a "vertex list". As you might imagine the edge list contains a list of all the relationships between students and teachers and any characteristics of those edges that we might be interested in. There are two essential variables in the edge list a "from" variable and a "to" variable that descibe the relationships between vertices (a disciplinary action is given "from" a teacher "to" a student for example). 
+iGraph requires data to be in a particular structure. There are several structures that it can use but we will be using a combination of an "edge list" and a "vertex list". As you might imagine the edge list contains a list of all the relationships between learners and mentors and characteristics of those edges that we might be interested in. There are two essential variables in the edge list a "from" variable and a "to" variable that descibe the relationships between vertices (For example, a mentor may read a comment by a student, the action is from the mentor to the student). 
 
 The vertex list contains all the characteristics of those vertices.
 
@@ -30,25 +34,43 @@ library(igraph)
 
 #First we will make an object that contains the graph information using our two dataframes EDGE and VERTEX. Notice that we have made "directed = TRUE" - our graph is directed since discipline is being given from a teacher to a student.
 
-g <- graph.data.frame(EDGE, directed=TRUE, vertices=NODE)
+g <- graph.data.frame(EDGE, directed=FALSE, vertices=NODE)
 
 #Now we can plot our graph using the force directed graphing technique - our old friend Fruchertman-Reingold!
 
 plot(g,layout=layout.fruchterman.reingold)
 
-#There are many ways to change the attributes of the graph to represent different characteristics of the newtork. For example, we can color the nodes according to gender.
+#It looks like there are a lot of self-referencing nodes. We might want to get rid of those for now
+
+EDGE$from <- ifelse(EDGE$from == EDGE$to, NA, EDGE$from)
+EDGE$to <- ifelse(EDGE$from == EDGE$to, NA, EDGE$to)
+EDGE <- na.omit(EDGE)
+
+#Let's graph that now
+g <- graph.data.frame(EDGE, directed=FALSE, vertices=NODE)
+plot(g,layout=layout.fruchterman.reingold)
+
+#There are many ways to change the attributes of the graph to represent different characteristics of the newtork. For example, we can color the nodes according to role.
 
 plot(g,layout=layout.fruchterman.reingold, vertex.color=NODE$role)
 
-#We can change the thickness of the edge according to the number of times a particular teacher has sent a particular student to the principal.
+#We can change other attributes to make the graph easier to interpret and understand relationships better.
 
-plot(g,layout=layout.fruchterman.reingold, vertex.size = 0.5, vertex.color=NODE$role, edge.color=EDGE$Action, edge.arrow.size=0.2, vertex.label=NA)
+plot(g,layout=layout.fruchterman.reingold, 
+     vertex.size = 3,
+     vertex.label.dist=0.25,
+     vertex.label = as.character(NODE$label),
+     vertex.color=NODE$role, 
+     edge.width=0.2)
 
 #Other attributes you may want to change are:
 
 #Arrow size
 edge.arrow.size=
 
+#Edge color
+edge.color=
+  
 #Remove the labels
 vertex.label=NA
 
@@ -56,6 +78,7 @@ vertex.label=NA
 vertex.size=
   
 #And many others!
+  
 ```
 
-Play around with different graphs and then save your final version to the repo. Create a Zotero item for this R program and then commit, push and pull.
+Play around with different graphs and then save your final version to Github if you would like to share.
